@@ -1,0 +1,8 @@
+packages/
+ScoreBoardClient/Library/
+ScoreBoardModel/bin/
+ScoreBoardModel/obj/
+ScoreBoardServices/bin/
+ScoreBoardServices/obj/
+_ScoreBoardClient/obj/
+ScoreBoardClient/obj/
