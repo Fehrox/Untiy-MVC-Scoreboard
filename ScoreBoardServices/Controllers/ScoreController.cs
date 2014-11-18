@@ -17,7 +17,7 @@ namespace ScoreBoardServices.Controllers
         private Entities db = new Entities();
 
         // Get api/Score
-        public void Get(
+        public bool Get(
             string gameName,
             string playerName,
             int points,
@@ -37,7 +37,7 @@ namespace ScoreBoardServices.Controllers
 
             // Check that the score is valid.
             var securityPassed = CheckSumScore.CheckSum(playerName, points) == checkSum;
-            if (!securityPassed) return;
+            if (!securityPassed) return false;
 
             // Register new score.
             db.Scores.Add(
@@ -50,6 +50,8 @@ namespace ScoreBoardServices.Controllers
             if (ModelState.IsValid) {
                 db.SaveChanges();
             }
+
+            return true;
         }
 
         protected override void Dispose(bool disposing)

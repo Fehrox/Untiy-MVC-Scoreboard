@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using JsonFx.Json;
+using System;
 
 namespace ScoreBoardClient
 {
@@ -13,24 +14,26 @@ namespace ScoreBoardClient
             _gameName = gamename;
         }
 
-        public IEnumerator GetGameScores(System.Action<Score[]> resultHandler) {
-            var scoreGet = new WWW(_serverUri + "Board?gameName="+_gameName);
-            yield return scoreGet;
+        public IEnumerator GetGameScores(Action<Score[]> resultHandler) {
+            var request = new WWW(_serverUri + "Board?gameName="+_gameName);
+            yield return request;
             var reader = new JsonReader();
-            resultHandler(reader.Read<Score[]>(scoreGet.text));
+            resultHandler(reader.Read<Score[]>(request.text));
         }
 
-        public IEnumerator SubmitGameScore(string playerName, int points) { 
+        public IEnumerator SubmitGameScore(string playerName, 
+                                           int points, 
+                                           Action<bool> responseHandler) { 
+
             var checkSum = CheckSumScore.CheckSum(playerName, points);
-            var scorePost = new WWW(_serverUri + "Score" +
+            var request = new WWW(_serverUri + "Score" +
                 "?gameName=" + _gameName +
                 "&playerName=" + playerName +
                 "&points=" + points +
-                "&checkSum=" + checkSum); 
-            yield return scorePost;
-            if (scorePost.error != null) {
-                Debug.LogError(scorePost.error);
-            }
+                "&checkSum=" + checkSum);
+            yield return request;
+            var reader = new JsonReader();
+            responseHandler(reader.Read<bool>(request.text));
         }
     }
 }
