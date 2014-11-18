@@ -17,8 +17,12 @@ namespace ScoreBoardClient
         public IEnumerator GetGameScores(Action<Score[]> resultHandler) {
             var request = new WWW(_serverUri + "Board?gameName="+_gameName);
             yield return request;
-            var reader = new JsonReader();
-            resultHandler(reader.Read<Score[]>(request.text));
+            if (request.error != null) {
+                Debug.LogError(request.error);
+            } else {
+                var reader = new JsonReader();
+                resultHandler(reader.Read<Score[]>(request.text));
+            }
         }
 
         public IEnumerator SubmitGameScore(string playerName, 
@@ -32,8 +36,12 @@ namespace ScoreBoardClient
                 "&points=" + points +
                 "&checkSum=" + checkSum);
             yield return request;
-            var reader = new JsonReader();
-            responseHandler(reader.Read<bool>(request.text));
+            if (request.error != null) {
+                Debug.LogError(request.error);
+            } else {
+                var reader = new JsonReader();
+                responseHandler(reader.Read<bool>(request.text));
+            }
         }
     }
 }
